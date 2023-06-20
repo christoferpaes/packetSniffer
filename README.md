@@ -2,7 +2,7 @@
 
 
 <header>
-  <---! --->
+
   <p> This is needed.
     <div><b>app-level build.gradle file</b>
     </div>
