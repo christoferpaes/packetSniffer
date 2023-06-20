@@ -10,6 +10,6 @@ dependencies {
 }
 #AndroidManifest.xml file
 <div>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
 </div>
 
