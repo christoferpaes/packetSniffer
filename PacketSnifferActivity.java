@@ -1,7 +1,7 @@
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -16,8 +16,6 @@ import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.util.NifSelector;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,6 +23,10 @@ public class PacketSnifferActivity extends AppCompatActivity {
 
     private static final String TAG = PacketSnifferActivity.class.getSimpleName();
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final String TWILIO_ACCOUNT_SID = "YOUR_TWILIO_ACCOUNT_SID";
+    private static final String TWILIO_AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN";
+    private static final String FROM_PHONE_NUMBER = "YOUR_TWILIO_PHONE_NUMBER";
+    private static final String TO_PHONE_NUMBER = "RECIPIENT_PHONE_NUMBER";
 
     private TextView packetTextView;
     private StringBuilder packetBuilder;
@@ -45,14 +47,14 @@ public class PacketSnifferActivity extends AppCompatActivity {
     }
 
     private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(
                 this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new String[]{Manifest.permission.SEND_SMS},
                 PERMISSION_REQUEST_CODE
         );
     }
@@ -84,6 +86,9 @@ public class PacketSnifferActivity extends AppCompatActivity {
                         packetTextView.setText(packetBuilder.toString());
                     }
                 });
+
+                // Send SMS message with the packet data
+                sendSMS(packet.toString());
             }
         };
 
@@ -128,28 +133,13 @@ public class PacketSnifferActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        savePacketsToFile();
+        // Save packets to a file if needed
     }
 
-    private void savePacketsToFile() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            File file = new File(directory, "packets.txt");
-            try {
-                FileWriter writer = new FileWriter(file);
-                writer.write(packetBuilder.toString());
-                writer.close();
-                Log.d(TAG, "Packets saved to file: " + file.getAbsolutePath());
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to save packets to file: " + e.getMessage());
-            }
-        } else {
-            Log.d(TAG, "External storage not mounted.");
-        }
+    private void sendSMS(String message) {
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(TO_PHONE_NUMBER, null, message, null, null);
+        Log.d(TAG, "SMS sent to: " + TO_PHONE_NUMBER);
     }
 }
 
