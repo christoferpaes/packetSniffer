@@ -1,8 +1,8 @@
 # packetSniffer
 <header>
-    <b>  app-level build.gradle file</b>
+  <p> <b>  app-level build.gradle file</b>
   
-
+</p>
 </header>
 
 dependencies {
@@ -12,6 +12,7 @@ dependencies {
 }
 
 
-AndroidManifest.xml file 
+<header>
+  <p>  <b>AndroidManifest.xml file</b></p> </header>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
