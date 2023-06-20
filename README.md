@@ -8,7 +8,9 @@ dependencies {
     implementation 'org.pcap4j:pcap4j-packetfactory-static:1.8.0'
     implementation 'org.pcap4j:pcap4j-packetfactory-propertiesbased:1.8.0'
 }
-#AndroidManifest.xml file
+#
+<div>
+  AndroidManifest.xml file </div>
 <div>
 uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
 </div>
