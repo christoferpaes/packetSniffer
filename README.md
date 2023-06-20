@@ -10,10 +10,14 @@ dependencies {
 
 </p>
 </header>
-#
+
 <div>
  <header><b>AndroidManifest.xml file</b></header> </div>
+ <header1>
+   <p>
 <div>
-<"'uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" '"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </div>
+  </p>
+</header1>
 
